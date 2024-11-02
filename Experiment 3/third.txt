@@ -1,0 +1,84 @@
+import java.util.Scanner;
+
+public class DiningPhilosophers {
+    static void one(int tph, int[] philname, int[] hu, int howhung) {
+        System.out.println("\nAllow one philosopher to eat at any time");
+        for (int pos = 0; pos < howhung; pos++) {
+            System.out.printf("\nP %d is granted to eat", philname[hu[pos]]);
+            for (int x = pos + 1; x < howhung; x++) {
+                System.out.printf("\nP %d is waiting", philname[hu[x]]);
+            }
+        }
+    }
+
+    static void two(int tph, int[] philname, int[] hu, int howhung) {
+        int s = 0; // Count of combinations
+        System.out.println("\nAllow two philosophers to eat at the same time");
+
+        for (int i = 0; i < howhung; i++) {
+            for (int j = i + 1; j < howhung; j++) {
+                if (Math.abs(hu[i] - hu[j]) >= 1 && Math.abs(hu[i] - hu[j]) != 4) {
+                    System.out.printf("\n\nCombination %d \n", (s + 1));
+                    System.out.printf("\nP %d and P %d are granted to eat", philname[hu[i]], philname[hu[j]]);
+                    s++;
+
+                    for (int x = 0; x < howhung; x++) {
+                        if (hu[x] != hu[i] && hu[x] != hu[j]) {
+                            System.out.printf("\nP %d is waiting", philname[hu[x]]);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        int tph, howhung, cho;
+
+        System.out.println("\n\nDINING PHILOSOPHER PROBLEM");
+        System.out.print("Enter the total number of philosophers: ");
+        tph = scanner.nextInt();
+        
+        int[] philname = new int[tph];
+        int[] status = new int[tph];
+        int[] hu = new int[20]; // Max 20 hungry philosophers
+
+        for (int i = 0; i < tph; i++) {
+            philname[i] = (i + 1);
+            status[i] = 1; // 1 for thinking, 2 for hungry
+        }
+        
+        System.out.print("How many are hungry: ");
+        howhung = scanner.nextInt();
+
+        if (howhung == tph) {
+            System.out.println("\nAll are hungry..\nDeadlock stage will occur\n");
+            System.out.println("Exiting");
+            return; // Exit the program if all are hungry
+        } else {
+            for (int i = 0; i < howhung; i++) {
+                System.out.printf("Enter philosopher %d position: ", (i + 1));
+                hu[i] = scanner.nextInt();
+                status[hu[i]] = 2; // Marking as hungry
+            }
+
+            do {
+                System.out.print("1. One can eat at a time\t2. Two can eat at a time\t3. Exit\nEnter your choice: ");
+                cho = scanner.nextInt();
+                switch (cho) {
+                    case 1:
+                        one(tph, philname, hu, howhung);
+                        break;
+                    case 2:
+                        two(tph, philname, hu, howhung);
+                        break;
+                    case 3:
+                        System.exit(0);
+                    default:
+                        System.out.println("\nInvalid option..\n");
+                }
+            } while (true);
+        }
+    }
+}
