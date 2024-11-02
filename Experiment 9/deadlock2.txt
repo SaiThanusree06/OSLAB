@@ -1,0 +1,65 @@
+#include <stdio.h>
+#include <conio.h>
+
+void main() {
+    char job[10][10];
+    int time[10], avail, temp[10], order[10]; 
+    int safe[10], ind = 0, i, j, n;
+
+    clrscr(); // Clear screen, use this if you're on a platform that supports it
+
+    printf("Enter number of jobs: ");
+    scanf("%d", &n);
+    for (i = 0; i < n; i++) {
+        printf("Enter job name and execution time: ");
+        scanf("%s%d", job[i], &time[i]);
+    }
+
+    printf("Enter the available resources: ");
+    scanf("%d", &avail);
+
+    // Initialize temp array for sorting
+    for (i = 0; i < n; i++) {
+        temp[i] = time[i];
+        order[i] = i; // Store original indices
+    }
+
+    // Sort jobs based on execution time
+    for (i = 0; i < n - 1; i++) {
+        for (j = i + 1; j < n; j++) {
+            if (temp[i] > temp[j]) {
+                // Swap execution times
+                int t = temp[i];
+                temp[i] = temp[j];
+                temp[j] = t;
+
+                // Swap job indices
+                t = order[i];
+                order[i] = order[j];
+                order[j] = t;
+            }
+        }
+    }
+
+    // Determine the safe sequence
+    for (i = 0; i < n; i++) {
+        int q = order[i];
+        if (time[q] <= avail) {
+            safe[ind++] = q; // Store index of the safe job
+            avail -= time[q]; // Decrease available resources
+            printf("Job %s executed.\n", job[q]);
+        }
+    }
+
+    // Check if a safe sequence exists
+    if (ind == 0) {
+        printf("No safe sequence exists.\n");
+    } else {
+        printf("Safe sequence is:\n");
+        for (i = 0; i < ind; i++) {
+            printf("%s (Time: %d)\n", job[safe[i]], time[safe[i]]);
+        }
+    }
+
+    getch(); // Wait for user input before closing
+}
